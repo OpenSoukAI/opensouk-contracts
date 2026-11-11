@@ -21,7 +21,7 @@ interface IUSDC {
     function authorizationState(address authorizer, bytes32 nonce) external view returns (bool);
 }
 
-/// @dev The only test in this repository that runs against real USDC bytecode (REF-269).
+/// @dev The only test in this repository that runs against real USDC bytecode.
 ///
 ///      Before this file existed, nothing here had ever exercised `route()` against the token it
 ///      actually settles on. Both USDC mocks were written to agree with our own signers, so the
@@ -240,7 +240,7 @@ contract SplitRouterUSDCForkTest is Test {
         assertEq(usdc.balanceOf(treasury), 2e6);
     }
 
-    /// @dev The pre-REF-269 signature, against the token that actually validates it. Real USDC
+    /// @dev The `TransferWithAuthorization` signature, against the token that actually validates it. Real USDC
     ///      rejects it inside `receiveWithAuthorization`, so nothing moves and the x402 rail
     ///      cannot settle — independent of whether the protocol is deployed.
     function test_Fork_Route_Reverts_WithTransferSignature() public {
@@ -258,7 +258,7 @@ contract SplitRouterUSDCForkTest is Test {
         splitRouter.route(rp, ep);
 
         // The rejection costs nothing on-chain: the nonce stays unused, so the same
-        // authorization can be re-signed under the correct typehash and retried (REF-269 item 12).
+        // authorization can be re-signed under the correct typehash and retried.
         assertFalse(usdc.authorizationState(buyer, nonce));
         assertEq(usdc.balanceOf(buyer), GROSS);
     }

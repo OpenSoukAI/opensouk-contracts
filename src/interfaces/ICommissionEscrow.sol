@@ -44,7 +44,7 @@ interface ICommissionEscrow {
     struct EscrowRecord {
         uint256 reviewerAgentId; // AgentRegistry token ID of the reviewer.
         uint256 buyerAgentId; // AgentRegistry token ID of the buyer (SENTINEL_BUYER if agent-less).
-        address buyerWallet; // Paying wallet recorded at purchase (used by agent-less bind/claim, C-4).
+        address buyerWallet; // Paying wallet recorded at purchase (used by agent-less bind/claim).
         uint40 pausedTotalAtDeposit; // totalPausedSeconds() when this escrow was created.
         uint256 merchantId; // MerchantRegistry token ID.
         bytes32 productId; // ProductRegistry product identifier.
@@ -120,7 +120,7 @@ interface ICommissionEscrow {
     ///         Uses nonReentrant and whenNotPaused.
     /// @param reviewerAgentId    AgentRegistry token ID of the reviewer (SENTINEL_REVIEWER if no referral).
     /// @param buyerAgentId       AgentRegistry token ID of the buyer (SENTINEL_BUYER if agent-less).
-    /// @param buyerWallet        Paying wallet recorded on the escrow (agent-less bind/claim, C-4).
+    /// @param buyerWallet        Paying wallet recorded on the escrow (agent-less bind/claim).
     /// @param merchantId         MerchantRegistry token ID.
     /// @param productId          ProductRegistry product identifier.
     /// @param productType        0 = Repeat, 1 = OneOff.
@@ -260,11 +260,11 @@ interface ICommissionEscrow {
     error SettlementWindowOutOfBounds(uint40 window);
 
     /// @notice Thrown when deposit is called with buyerWallet == address(0). Every escrow must
-    ///         record a real paying wallet (consumed by the agent-less bind/claim flow, C-4).
+    ///         record a real paying wallet (consumed by the agent-less bind/claim flow).
     error ZeroBuyerWallet();
 
     /// @notice Thrown when releaseCashback is called for an un-bound agent-less escrow
-    ///         (buyerAgentId == SENTINEL_BUYER). The buyer can't be resolved until C-4 bind.
+    ///         (buyerAgentId == SENTINEL_BUYER). The buyer can't be resolved until bind.
     error BuyerNotBound(uint256 escrowId);
 
     /// @notice Thrown when bind targets an escrow that isn't an agent-less sentinel (already bound).

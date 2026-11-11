@@ -81,7 +81,7 @@ contract MockFixture is Test {
     // -------------------------------------------------------------------------
 
     /// @dev Signs the ERC-3009 authorization `SplitRouter.route()` will pull with, under the
-    ///      `ReceiveWithAuthorization` typehash (REF-269). `to` is the router because
+    ///      `ReceiveWithAuthorization` typehash. `to` is the router because
     ///      `receiveWithAuthorization` requires `to == msg.sender`.
     ///
     ///      Derives `from`/`value` from `routeParams` so a call site cannot sign an authorization
@@ -213,7 +213,7 @@ contract IntegrationFixture is Test {
         reviewRegistry.grantRole(keccak256("ORACLE_ROLE"), oracle);
         escrow.grantRole(keccak256("ORACLE_ROLE"), oracle);
         splitRouter.grantRole(keccak256("FACILITATOR_ROLE"), facilitator);
-        // Pausing is its own role (REF-327); the deploy scripts always grant it to the admin so a
+        // Pausing is its own role; the deploy scripts always grant it to the admin so a
         // deployment is never left unpausable, and this fixture mirrors that.
         escrow.grantRole(keccak256("PAUSER_ROLE"), admin);
         vm.stopPrank();
@@ -249,7 +249,7 @@ contract IntegrationFixture is Test {
     }
 
     /// @dev Signs the ERC-3009 authorization `SplitRouter.route()` will pull with, under the
-    ///      `ReceiveWithAuthorization` typehash (REF-269). `to` is the router because
+    ///      `ReceiveWithAuthorization` typehash. `to` is the router because
     ///      `receiveWithAuthorization` requires `to == msg.sender`.
     ///
     ///      Derives `from`/`value` from `routeParams` so a call site cannot sign an authorization
@@ -276,7 +276,7 @@ contract IntegrationFixture is Test {
     }
 
     /// @dev `buyerPk` must be the key behind `buyer` — the route pulls via a signed ERC-3009
-    ///      authorization, so an address without a key cannot pay (REF-269).
+    ///      authorization, so an address without a key cannot pay.
     function fundAndRoute(
         address buyer,
         uint256 buyerPk,
@@ -288,7 +288,7 @@ contract IntegrationFixture is Test {
         uint16 commissionMultiplierBps,
         uint16 lockedCashbackBps
     ) internal returns (uint256 escrowId) {
-        // Commission is read live from ProductRegistry at settle (REF-159); the caller must have
+        // Commission is read live from ProductRegistry at settle; the caller must have
         // registered `productId` with the desired commission before invoking this helper.
         usdc.mint(buyer, grossAmount);
         ISplitRouter.RouteParams memory rp = ISplitRouter.RouteParams({

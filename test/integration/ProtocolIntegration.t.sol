@@ -52,7 +52,7 @@ contract ProtocolIntegration is IntegrationFixture {
 
     function setUp() public override {
         super.setUp();
-        // route() pulls via a signed ERC-3009 authorization, so the buyer needs a key (REF-269).
+        // route() pulls via a signed ERC-3009 authorization, so the buyer needs a key.
         // makeAddrAndKey yields the same address makeAddr did for this label.
         (buyer, buyerPk) = makeAddrAndKey("buyer");
         reviewerOwner = vm.addr(reviewerPk);
@@ -187,8 +187,8 @@ contract ProtocolIntegration is IntegrationFixture {
         assertEq(usdc.balanceOf(address(escrow)), 0);
     }
 
-    /// @dev REF-165: publishReviewWithEscrowProof records the review but must NOT release
-    ///      cashback. Release is oracle-only (gated on votes off-chain, REF-147); the buyer
+    /// @dev publishReviewWithEscrowProof records the review but must NOT release
+    ///      cashback. Release is oracle-only (gated on votes off-chain); the buyer
     ///      is paid only when the oracle explicitly calls releaseCashback.
     function test_Integration_EscrowProof_DoesNotAutoReleaseCashback() public {
         uint256 reviewId = _oracleReview(1);
@@ -208,7 +208,7 @@ contract ProtocolIntegration is IntegrationFixture {
     }
 
     // =========================================================================
-    // 2b. Agent-less lifecycle (REF-161/162): sentinel purchase → bind → claim
+    // 2b. Agent-less lifecycle: sentinel purchase → bind → claim
     // =========================================================================
 
     function test_Integration_AgentLess_BindThenClaim() public {
@@ -310,7 +310,7 @@ contract ProtocolIntegration is IntegrationFixture {
         _route(reviewId1);
         assertEq(usdc.balanceOf(merchantOwner), 88e6);
 
-        // Merchant raises the product commission to 20% in ProductRegistry (REF-159: read live at settle).
+        // Merchant raises the product commission to 20% in ProductRegistry (read live at settle).
         vm.prank(merchantOwner);
         productRegistry.setCommission(merchantId, PRODUCT_ID, 2000);
 

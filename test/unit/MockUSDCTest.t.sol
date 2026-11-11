@@ -5,7 +5,7 @@ import {Test} from "forge-std/Test.sol";
 import {ERC3009Signer} from "../helpers/ERC3009Signer.sol";
 import {MockUSDC} from "../../src/MockUSDC.sol";
 
-/// @dev First tests for the deployable testnet token (REF-269).
+/// @dev First tests for the deployable testnet token.
 ///
 ///      `src/MockUSDC.sol` is what the Sepolia deployment and the local anvil e2e harness run
 ///      against, and it had no test of its own. It carried Circle's Receive-variant caller guard
@@ -65,7 +65,7 @@ contract MockUSDCTest is Test {
         assertTrue(usdc.authorizationState(buyer, nonce));
     }
 
-    /// @dev The REF-269 bug, asserted on the deployable token: the signature every signer in the
+    /// @dev The typehash bug, asserted on the deployable token: the signature every signer in the
     ///      stack produced is rejected by the function `SplitRouter.route()` calls.
     function test_ReceiveWithAuthorization_RejectsTransferSignature() public {
         bytes32 nonce = keccak256("b");
@@ -212,7 +212,7 @@ contract MockUSDCTest is Test {
         return vm.sign(buyerPk, ERC3009Signer.digest(typehash, domainSep, auth));
     }
 
-    // ── Blacklist query (REF-274 §2) ─────────────────────────────────────────────────────────
+    // ── Blacklist query ─────────────────────────────────────────────────────────
     //
     // Real USDC freezes addresses, and a frozen payout recipient reverts the whole
     // `splitCharge` — with the buyer's funds already pooled in the router. The backend

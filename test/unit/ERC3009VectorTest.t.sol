@@ -4,7 +4,7 @@ pragma solidity ^0.8.24;
 import {Test} from "forge-std/Test.sol";
 import {ERC3009Signer} from "../helpers/ERC3009Signer.sol";
 
-/// @dev Cross-language ERC-3009 digest vector (REF-269 item 8).
+/// @dev Cross-language ERC-3009 digest vector.
 ///
 ///      The same fixed authorization is hashed in three places that must agree exactly, or a
 ///      signature produced by one is rejected by another:

@@ -38,7 +38,7 @@ contract SplitRouterHandler is CommonBase, StdCheats, StdUtils {
     // Pre-minted actor pools
     uint256[] internal buyerAgentIds;
     address[] internal buyerAddrs;
-    /// @dev Buyers must be keyed: route() pulls via a signed ERC-3009 authorization (REF-269).
+    /// @dev Buyers must be keyed: route() pulls via a signed ERC-3009 authorization.
     uint256[] internal buyerPks;
     uint256[] internal merchantIds;
     uint256[] internal reviewerAgentIds;
@@ -96,7 +96,7 @@ contract SplitRouterHandler is CommonBase, StdCheats, StdUtils {
             merchantIds.push(merchantId);
             merchantRegistry_.setActiveRaw(merchantId, true);
 
-            // Commission is read live from ProductRegistry at settle (REF-159). Register the
+            // Commission is read live from ProductRegistry at settle. Register the
             // product per merchant; each route action sets the commission it needs.
             productRegistry_.addProduct(merchantId, PRODUCT_ID, 0, IProductRegistry.ProductType.Repeat, "");
 

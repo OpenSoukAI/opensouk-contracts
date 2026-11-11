@@ -18,7 +18,7 @@ import {ERC20} from "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 ///      `receiveWithAuthorization`, with a comment explaining that it "matches x402 library and
 ///      frontend: they sign TransferWithAuthorization". That made it agree with our own signers
 ///      instead of with the token it stands in for, and it is why the wrong typehash shipped
-///      everywhere unnoticed (REF-269). A mock's job is to mirror the real dependency; where the
+///      everywhere unnoticed. A mock's job is to mirror the real dependency; where the
 ///      caller disagrees with the dependency, the caller is what changes.
 ///
 ///      Divergences from FiatTokenV2_2, both deliberate: custom errors instead of require strings
@@ -75,7 +75,7 @@ contract MockUSDC is ERC20 {
     }
 
     /// @notice Mirrors Circle's `isBlacklisted` so a caller can pre-flight a frozen payout
-    ///         recipient (REF-274).
+    ///         recipient.
     /// @dev The backend reads this before settling an MPP charge: on real USDC a frozen recipient
     ///      reverts the whole `splitCharge`, stranding funds already pooled in the router. Without
     ///      the function present the read would revert, which is indistinguishable from an

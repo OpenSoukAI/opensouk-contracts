@@ -4,9 +4,9 @@ pragma solidity ^0.8.24;
 import {ERC20} from "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 
 /// @dev Test USDC. Verifies ERC-3009 authorizations the way real Circle USDC does, against the
-///      `ReceiveWithAuthorization` typehash (REF-269).
+///      `ReceiveWithAuthorization` typehash.
 ///
-///      Before REF-269 this mock accepted `v, r, s` and verified NOTHING — it called `_transfer`
+///      Previously this mock accepted `v, r, s` and verified NOTHING — it called `_transfer`
 ///      directly. That made the whole Foundry suite signature-blind, which is why every signer in
 ///      the stack could sign the wrong typehash for months with a green suite. A mock that agrees
 ///      with its caller instead of with the real dependency is not a test double, it is a mask.

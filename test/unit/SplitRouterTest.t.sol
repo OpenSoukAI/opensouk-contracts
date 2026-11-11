@@ -44,7 +44,7 @@ contract SplitRouterTest is MockFixture {
 
     function setUp() public override {
         super.setUp();
-        // route() pulls via a signed ERC-3009 authorization, so the buyer needs a key (REF-269).
+        // route() pulls via a signed ERC-3009 authorization, so the buyer needs a key.
         // makeAddrAndKey yields the same address makeAddr did for this label.
         (buyer, buyerPk) = makeAddrAndKey("buyer");
         router = new SplitRouter(address(par), admin, address(usdc), PLATFORM_FEE_BPS);
@@ -56,7 +56,7 @@ contract SplitRouterTest is MockFixture {
         reviewerAgentId = agentRegistry.mint(reviewer);
         merchantRegistry.setActiveRaw(merchantId, true);
 
-        // Commission is read live from ProductRegistry at settle (REF-159).
+        // Commission is read live from ProductRegistry at settle.
         setupProduct(merchantId, PRODUCT_ID, COMMISSION_BPS, 0);
 
         // Seed ReviewRegistry mock with a review for reviewerAgentId.
@@ -119,7 +119,7 @@ contract SplitRouterTest is MockFixture {
         assertEq(usdc.balanceOf(reviewer), REVIEWER_NET);
     }
 
-    // REF-159: a merchant raising commission after authorization so that commission + platformFee
+    // A merchant raising commission after authorization so that commission + platformFee
     // exceeds 100% must NOT revert settlement. The router clamps the live commission to
     // BPS_DENOM - platformFee, so the split always executes.
     function test_Route_HighLiveCommission_ClampedNotReverted() public {
@@ -169,7 +169,7 @@ contract SplitRouterTest is MockFixture {
         assertEq(r.originalPurchaseAmt, GROSS);
     }
 
-    /// @dev Refactor guard (REF-213 Task 1): route() must produce identical splits after the
+    /// @dev Refactor guard: route() must produce identical splits after the
     ///      _validate / _settleAndDeposit extraction. Values are the existing fixture's
     ///      pre-refactor outputs for GROSS = 100e6.
     function test_Route_SplitValues_UnchangedByRefactor() public {
@@ -209,7 +209,7 @@ contract SplitRouterTest is MockFixture {
     }
 
     // =========================================================================
-    // Agent-less buyer + buyerWallet (REF-161 / C-3)
+    // Agent-less buyer + buyerWallet
     // =========================================================================
 
     function test_Route_StoresBuyerWallet_NormalAgent() public {
@@ -410,7 +410,7 @@ contract SplitRouterTest is MockFixture {
         router.route(rp, _erc3009Params(rp));
     }
 
-    // REF-160: a deactivated product must be rejected on-chain at settle (the edge flow removes
+    // A deactivated product must be rejected on-chain at settle (the edge flow removes
     // the backend product-active gate).
     function test_Route_Revert_ProductNotActive() public {
         productRegistry.setProductActive(merchantId, PRODUCT_ID, false);
@@ -420,7 +420,7 @@ contract SplitRouterTest is MockFixture {
         router.route(rp, _erc3009Params(rp));
     }
 
-    // NOTE (REF-159): route() no longer propagates RatesExceedTotal — the router clamps live
+    // NOTE: route() no longer propagates RatesExceedTotal — the router clamps live
     // commission to (10000 - platformFee), so commission + fee can never exceed 100%. The clamp
     // behavior is covered by test_Route_HighLiveCommission_ClampedNotReverted; the SplitMath
     // RatesExceedTotal guard itself is covered directly in SplitMathTest / SplitMathFuzz.

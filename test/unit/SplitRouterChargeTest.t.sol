@@ -12,8 +12,8 @@ import {ICommissionEscrow} from "../../src/interfaces/ICommissionEscrow.sol";
 import {SplitMath} from "../../src/libraries/SplitMath.sol";
 import {ReentrancyGuardTransient} from "@openzeppelin/contracts/utils/ReentrancyGuardTransient.sol";
 
-/// @dev Ported from archive/tempo/test/unit/SplitRouterMPPTest.t.sol (splitCharge section,
-///      lines ~598-770) for REF-213 Task 3. Only the contract under test (SplitRouter instead of
+/// @dev Ported from the retired SplitRouterMPP unit suite (splitCharge section).
+///      Only the contract under test (SplitRouter instead of
 ///      SplitRouterMPP), the attribution type (ISplitRouter.Attribution instead of
 ///      ISplitRouterMPP.AttributionSnapshot), and the EIP-712 domain ("SplitRouter" / "1" instead
 ///      of "SplitRouterMPP" / "2") differ from the archived cases.
@@ -66,7 +66,7 @@ contract SplitRouterChargeTest is MockFixture {
 
     function setUp() public override {
         super.setUp();
-        // route() pulls via a signed ERC-3009 authorization, so the buyer needs a key (REF-269).
+        // route() pulls via a signed ERC-3009 authorization, so the buyer needs a key.
         // makeAddrAndKey yields the same address makeAddr did for this label.
         (buyer, buyerPk) = makeAddrAndKey("buyer");
         (oracleSigner, oraclePk) = makeAddrAndKey("oracleSigner");
@@ -88,7 +88,7 @@ contract SplitRouterChargeTest is MockFixture {
         reviewerAgentId = agentRegistry.mint(reviewer);
         merchantRegistry.setActiveRaw(merchantId, true);
 
-        // Commission is read live from ProductRegistry at settle (REF-159).
+        // Commission is read live from ProductRegistry at settle.
         setupProduct(merchantId, PRODUCT_ID, COMMISSION_BPS, 0);
 
         reviewId = 1;
@@ -203,7 +203,7 @@ contract SplitRouterChargeTest is MockFixture {
         assertEq(usdc.balanceOf(address(router)), 0);
     }
 
-    // REF-159: a merchant raising commission after the charge was delivered must NOT strand the
+    // A merchant raising commission after the charge was delivered must NOT strand the
     // already-transferred funds. The router clamps live commission to BPS_DENOM - platformFee so
     // splitCharge always settles (this is the sharp case — funds arrive before the call).
     function test_SplitCharge_HighLiveCommission_ClampedNotStranded() public {
@@ -268,9 +268,9 @@ contract SplitRouterChargeTest is MockFixture {
         assertEq(r.heldBackAmt, HELD_BACK);
     }
 
-    // REF-161 review: MPP had no zero-payer guard. Sentinel skips ownerOf, which used to reject
+    // MPP had no zero-payer guard. Sentinel skips ownerOf, which used to reject
     // payer==0 as a side effect — so a zero payer must be rejected explicitly (else buyerWallet
-    // would persist as 0 and the escrow could never be bound/claimed in C-4).
+    // would persist as 0 and the escrow could never be bound/claimed).
     function test_SplitCharge_Revert_ZeroPayer() public {
         _fundCharge(GROSS);
         ISplitRouter.Attribution memory a = _attr();
@@ -330,7 +330,7 @@ contract SplitRouterChargeTest is MockFixture {
         router.splitCharge(PAYMENT_REF, GROSS - 1, buyer, a, sig);
     }
 
-    // Reviewer's review flagged this as Important-2: only `amount` was tamper-tested. If any of
+    // Previously only `amount` was tamper-tested. If any of
     // the 7 signed Attribution fields (or paymentRef/payer) were ever dropped from the
     // abi.encode in _verifyChargeAttestation, this suite would stay green while a caller could
     // rewrite the split (e.g. set commissionMultiplierBps=10000 and lockedCashbackBps=0 to hand
@@ -359,7 +359,7 @@ contract SplitRouterChargeTest is MockFixture {
         router.splitCharge(PAYMENT_REF, GROSS, stranger, signed, sig);
     }
 
-    // Important-2 follow-up: the domain's verifyingContract is bound too — a signature valid for
+    // The domain's verifyingContract is bound too — a signature valid for
     // one SplitRouter must not verify against a different deployment.
     function test_SplitCharge_Revert_WrongVerifyingContract() public {
         _fundCharge(GROSS);
@@ -385,7 +385,7 @@ contract SplitRouterChargeTest is MockFixture {
         router.splitCharge(PAYMENT_REF, GROSS, buyer, a, sig);
     }
 
-    // REF-217 §3: this INVERTS the old test_SplitCharge_Revert_BuyerOwnerMismatch. The settlement
+    // This INVERTS the old test_SplitCharge_Revert_BuyerOwnerMismatch. The settlement
     // path no longer re-checks ownerOf, because on the charge rail the sale is already complete —
     // the buyer paid and the merchant served the resource — and the buyer's funds are already in
     // the router. A buyer legitimately transferring their own agent NFT afterwards must not brick a
@@ -393,7 +393,7 @@ contract SplitRouterChargeTest is MockFixture {
     // bindability rather than gating the sale, and SENTINEL_BUYER bypassed it entirely, so it was
     // never load-bearing. The payer wallet is still recorded on the escrow either way, and the
     // oracle now checks ownerOf at attestation time, which is the moment it can be checked
-    // correctly (REF-217 §1). route() keeps its check — see test_Route_Revert_BuyerOwnerMismatch.
+    // correctly. route() keeps its check — see test_Route_Revert_BuyerOwnerMismatch.
     function test_SplitCharge_SettlesAfterBuyerAgentTransferred() public {
         _fundCharge(GROSS);
         ISplitRouter.Attribution memory a = _attr();
@@ -414,7 +414,7 @@ contract SplitRouterChargeTest is MockFixture {
     }
 
     // =========================================================================
-    // attestation signer as a role (REF-327)
+    // attestation signer as a role
     // =========================================================================
 
     // The point of holding the signer as a role rather than a registry entry: a compromised key is
@@ -467,7 +467,7 @@ contract SplitRouterChargeTest is MockFixture {
         );
     }
 
-    // Retained deliberately as defence-in-depth: REF-217 §1 gates this upstream at attestation time,
+    // Retained deliberately as defence-in-depth: the oracle gates this upstream at attestation time,
     // so the oracle should never sign for a suspended merchant. This check is the backstop against a
     // COMPROMISED OR BUGGY ORACLE — the oracle key is the highest-risk key in the system, and
     // merchant/product active state is the one condition where an on-chain re-check has real value.
@@ -481,9 +481,8 @@ contract SplitRouterChargeTest is MockFixture {
         router.splitCharge(PAYMENT_REF, GROSS, buyer, a, sig);
     }
 
-    // REF-160: deactivated product must be rejected on-chain at settle.
-    // REF-217 §3: retained as defence-in-depth against a compromised/buggy oracle — see the note on
-    // test_SplitCharge_Revert_MerchantNotActive. Gated upstream at attestation time by §1.
+    // A deactivated product must be rejected on-chain at settle. Retained as defence-in-depth against a compromised/buggy oracle — see the note on
+    // test_SplitCharge_Revert_MerchantNotActive. Gated upstream at attestation time.
     function test_SplitCharge_Revert_ProductNotActive() public {
         _fundCharge(GROSS);
         productRegistry.setProductActive(merchantId, PRODUCT_ID, false);
@@ -493,7 +492,7 @@ contract SplitRouterChargeTest is MockFixture {
         router.splitCharge(PAYMENT_REF, GROSS, buyer, a, sig);
     }
 
-    // REF-217 §3: an admin lowering the cashback cap AFTER the oracle attested must not brick a sale
+    // An admin lowering the cashback cap AFTER the oracle attested must not brick a sale
     // whose funds are already sitting in the router. Clamp to the current cap and settle instead of
     // reverting. route() keeps reverting with CashbackExceedsCommissionCap, because its revert
     // precedes the ERC-3009 pull — nothing is stranded there.
@@ -522,7 +521,7 @@ contract SplitRouterChargeTest is MockFixture {
         assertEq(usdc.balanceOf(merchantOwner), MERCHANT_AMT, "merchant amount unchanged by the clamp");
     }
 
-    // Important-1: pins the contract's actual EIP-712 domain. Without this, every test in this
+    // Pins the contract's actual EIP-712 domain. Without this, every test in this
     // file is only self-consistent (the _chargeDigest helper hard-codes "SplitRouter"/"1" and
     // signs against it) — nothing ties that literal to what the constructor actually passed to
     // EIP712(...). If both had been copy-pasted from the archive as "SplitRouterMPP"/"2", all

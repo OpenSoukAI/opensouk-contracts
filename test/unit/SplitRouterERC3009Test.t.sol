@@ -8,7 +8,7 @@ import {SplitRouter} from "../../src/SplitRouter.sol";
 import {ISplitRouter} from "../../src/interfaces/ISplitRouter.sol";
 import {IReviewRegistry} from "../../src/interfaces/IReviewRegistry.sol";
 
-/// @dev Pins the ERC-3009 authorization contract of `SplitRouter.route()` (REF-269).
+/// @dev Pins the ERC-3009 authorization contract of `SplitRouter.route()`.
 ///
 ///      The rest of the suite exercises the split arithmetic and settlement, and treats the
 ///      authorization as a precondition it satisfies. These cases are the opposite: they assert
@@ -107,7 +107,7 @@ contract SplitRouterERC3009Test is MockFixture {
     // =========================================================================
 
     /// @dev The two ERC-3009 structs carry identical fields under different names, so they hash
-    ///      differently. This is the whole of REF-269 in one assertion: any signer that picks the
+    ///      differently. This is the whole typehash bug in one assertion: any signer that picks the
     ///      wrong one produces a signature the token cannot verify.
     function test_Typehashes_ReceiveAndTransfer_ProduceDifferentDigests() public view {
         ERC3009Signer.Authorization memory auth = _validAuth(bytes32(uint256(1)));
@@ -118,7 +118,7 @@ contract SplitRouterERC3009Test is MockFixture {
         assertTrue(receiveDigest != transferDigest);
     }
 
-    /// @dev The bug REF-269 fixes. Every signer in the stack produced this signature, and the
+    /// @dev The typehash bug. Every signer in the stack produced this signature, and the
     ///      suite accepted it because the mock verified nothing.
     function test_Route_Revert_SignedWithTransferTypehash() public {
         ISplitRouter.RouteParams memory rp = _routeParams();

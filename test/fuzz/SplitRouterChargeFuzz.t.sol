@@ -6,8 +6,8 @@ import {SplitRouter} from "../../src/SplitRouter.sol";
 import {ISplitRouter} from "../../src/interfaces/ISplitRouter.sol";
 import {IReviewRegistry} from "../../src/interfaces/IReviewRegistry.sol";
 
-/// @dev Ported from archive/tempo/test/fuzz/SplitRouterMPPFuzz.t.sol:118-200 (the splitCharge
-///      section only) for REF-213 Task 4. Only the contract under test (SplitRouter instead of
+/// @dev Ported from the retired SplitRouterMPP fuzz suite (the splitCharge section only).
+///      Only the contract under test (SplitRouter instead of
 ///      SplitRouterMPP), the attribution type (ISplitRouter.Attribution instead of
 ///      ISplitRouterMPP.AttributionSnapshot), and the EIP-712 domain ("SplitRouter" / "1" instead
 ///      of "SplitRouterMPP" / "2") differ from the archived cases. closeAndSplit's fuzz cases are
@@ -60,7 +60,7 @@ contract SplitRouterChargeFuzz is MockFixture {
             })
         );
 
-        // Commission is read live from ProductRegistry at settle (REF-159). Register the product;
+        // Commission is read live from ProductRegistry at settle. Register the product;
         // each test sets the fuzzed commission via productRegistry.setCommission before settling.
         setupProduct(merchantId, PRODUCT_ID, 1000, 0);
     }

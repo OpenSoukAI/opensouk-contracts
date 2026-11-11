@@ -65,7 +65,7 @@ contract SplitRouterInvariant is StdInvariant, MockFixture {
 
     /// @dev Liveness. Every other invariant here holds trivially when no route ever succeeds:
     ///      an empty router balance and a zero reviewer total are exactly what a suite that
-    ///      routes nothing produces. REF-269 hit precisely that — making the token verify
+    ///      routes nothing produces. A past bug hit precisely that — making the token verify
     ///      signatures reverted every handler action, and this suite still reported four
     ///      passing invariants.
     ///

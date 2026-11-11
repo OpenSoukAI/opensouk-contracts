@@ -9,7 +9,7 @@ import {IReviewRegistry} from "../../src/interfaces/IReviewRegistry.sol";
 import {ICommissionEscrow} from "../../src/interfaces/ICommissionEscrow.sol";
 import {Pausable} from "@openzeppelin/contracts/utils/Pausable.sol";
 
-/// @dev REF-213 Task 3 review (Important-4): the charge rail (`splitCharge`) was previously only
+/// @dev The charge rail (`splitCharge`) was previously only
 ///      exercised against `MockCommissionEscrow` with PAR's SPLIT_ROUTER slot at a placeholder
 ///      address (see SplitRouterChargeTest.t.sol / MockFixture). That never proves the real
 ///      `CommissionEscrow.deposit` msg.sender gate accepts `splitCharge`'s caller (this router) —

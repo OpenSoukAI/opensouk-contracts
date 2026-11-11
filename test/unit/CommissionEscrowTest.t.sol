@@ -37,9 +37,9 @@ contract CommissionEscrowTest is MockFixture {
 
         vm.startPrank(admin);
         escrowReal.grantRole(keccak256("ORACLE_ROLE"), oracleAddr);
-        // releaseCashback is oracle-only (REF-165); this caller acts as a second oracle.
+        // releaseCashback is oracle-only; this caller acts as a second oracle.
         escrowReal.grantRole(keccak256("ORACLE_ROLE"), reviewRegistryCaller);
-        // Pausing is its own role (REF-327). Admin holds it here so the existing paused-state
+        // Pausing is its own role. Admin holds it here so the existing paused-state
         // tests read unchanged; pauserOnly and adminNoPauser exercise the split itself.
         escrowReal.grantRole(escrowReal.PAUSER_ROLE(), admin);
         escrowReal.grantRole(escrowReal.PAUSER_ROLE(), pauserOnly);
@@ -91,7 +91,7 @@ contract CommissionEscrowTest is MockFixture {
         assertEq(escrowId, 1);
     }
 
-    // REF-161 review: every escrow must record a real paying wallet (consumed by C-4 bind). Reject 0.
+    // Every escrow must record a real paying wallet (consumed by bind). Reject 0.
     function test_Deposit_Revert_ZeroBuyerWallet() public {
         vm.prank(splitRouterAddr);
         vm.expectRevert(ICommissionEscrow.ZeroBuyerWallet.selector);
@@ -109,9 +109,9 @@ contract CommissionEscrowTest is MockFixture {
         );
     }
 
-    // REF-161 review: releaseCashback resolves the buyer via _resolveWallet(buyerAgentId). For an
+    // releaseCashback resolves the buyer via _resolveWallet(buyerAgentId). For an
     // un-bound sentinel escrow that reverts (SENTINEL_BUYER is not a minted token). Locks the
-    // behavior so oracle tooling knows not to call it before C-4 bind; funds still return to the
+    // behavior so oracle tooling knows not to call it before bind; funds still return to the
     // reviewer at windowEnd via cashbackToReviewer / the day-70 fallback.
     function test_ReleaseCashback_RevertsForUnboundSentinel() public {
         vm.prank(splitRouterAddr);
@@ -134,7 +134,7 @@ contract CommissionEscrowTest is MockFixture {
     }
 
     // =========================================================================
-    // bind (agent-less deferred binding, REF-162 / C-4)
+    // bind (agent-less deferred binding)
     // =========================================================================
 
     function _depositSentinel() internal returns (uint256 escrowId) {
@@ -671,7 +671,7 @@ contract CommissionEscrowTest is MockFixture {
     }
 
     // =========================================================================
-    // setSettlementWindow (REF-161 / C-3)
+    // setSettlementWindow
     // =========================================================================
 
     function test_SettlementWindow_DefaultIs60Days() public view {
@@ -1051,7 +1051,7 @@ contract CommissionEscrowTest is MockFixture {
     }
 
     // =========================================================================
-    // REF-96 new tests — reviewer-funded cashback
+    // Reviewer-funded cashback
     // =========================================================================
 
     /// @dev Deposits with a specific cashback amount; mints USDC to cover heldBack + cashback.

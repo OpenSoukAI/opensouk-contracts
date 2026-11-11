@@ -98,7 +98,7 @@ contract MerchantRegistryTest is MockFixture {
         assertTrue(merchantReg.hasRole(merchantId, MerchantRoles.COMMISSION_MANAGER_ROLE, delegate));
     }
 
-    // SETTLEMENT_SIGNER_ROLE (REF-324): a hot key the merchant's server uses to sign facilitator
+    // SETTLEMENT_SIGNER_ROLE: a hot key the merchant's server uses to sign facilitator
     // /verify + /settle requests. No on-chain consumer — the facilitator checks hasRole off-chain —
     // so what the contract owes is: grantable, revocable, scoped per merchant, and rejected for
     // anyone who never held it.

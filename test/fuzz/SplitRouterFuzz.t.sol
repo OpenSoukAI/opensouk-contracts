@@ -23,7 +23,7 @@ contract SplitRouterFuzz is MockFixture {
 
     function setUp() public override {
         super.setUp();
-        // route() pulls via a signed ERC-3009 authorization, so the buyer needs a key (REF-269).
+        // route() pulls via a signed ERC-3009 authorization, so the buyer needs a key.
         // makeAddrAndKey yields the same address makeAddr did for this label.
         (buyer, buyerPk) = makeAddrAndKey("buyer");
         router = new SplitRouter(address(par), admin, address(usdc), 200);
@@ -35,7 +35,7 @@ contract SplitRouterFuzz is MockFixture {
         reviewerAgentId = agentRegistry.mint(reviewer);
         merchantRegistry.setActiveRaw(merchantId, true);
 
-        // Commission is read live from ProductRegistry at settle (REF-159). Register the product;
+        // Commission is read live from ProductRegistry at settle. Register the product;
         // each test sets the fuzzed commission via productRegistry.setCommission before routing.
         setupProduct(merchantId, PRODUCT_ID, 1000, 0);
 
@@ -130,7 +130,7 @@ contract SplitRouterFuzz is MockFixture {
 
     /// @dev route() must revert RatesExceedTotal iff commissionBps + platformFeeBps > 10000.
     ///      Cashback is no longer part of the RatesExceedTotal check (it has its own cap check).
-    /// @dev REF-159: when live commission + platform fee would exceed 100%, route() must NOT
+    /// @dev When live commission + platform fee would exceed 100%, route() must NOT
     ///      revert — the router clamps commission to (10000 - fee), so settlement always executes
     ///      and no funds strand. (The RatesExceedTotal guard itself is covered in SplitMathFuzz.)
     function testFuzz_HighCommission_Clamped_NoRevert(uint256 grossAmount, uint16 commissionBps, uint16 platformFeeBps)

@@ -17,9 +17,8 @@ import {ISplitRouter} from "../../src/interfaces/ISplitRouter.sol";
 ///              treasury got fee.
 ///
 /// @dev    The former "Part 2" of this file covered the same three flows over the
-///         Tempo/MPP `closeAndSplit` path. It moved to
-///         `archive/tempo/test/integration/ReviewerFundedCashbackMppTest.t.sol` when the
-///         session rail was shelved (REF-214) — it is no longer built. Cashback semantics
+///         MPP session `closeAndSplit` path, which was removed when the session rail was
+///         retired. Cashback semantics
 ///         live in `CommissionEscrow`, which is router-agnostic, so this file remains the
 ///         authoritative coverage for the model itself.
 
@@ -62,7 +61,7 @@ contract ReviewerFundedCashbackX402Test is IntegrationFixture {
 
     function setUp() public override {
         super.setUp();
-        // route() pulls via a signed ERC-3009 authorization, so the buyer needs a key (REF-269).
+        // route() pulls via a signed ERC-3009 authorization, so the buyer needs a key.
         // makeAddrAndKey yields the same address makeAddr did for this label.
         (buyer, buyerPk) = makeAddrAndKey("buyer");
         reviewerOwner = vm.addr(reviewerPk);

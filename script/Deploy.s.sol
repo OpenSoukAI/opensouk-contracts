@@ -22,7 +22,7 @@ import {SplitRouter} from "../src/SplitRouter.sol";
 ///   FACILITATOR        — x402 facilitator address, x402scan-listed identity (FACILITATOR_ROLE)
 ///   FACILITATOR_UNLISTED — x402 facilitator address, unlisted identity (FACILITATOR_ROLE). The
 ///                        facilitator service picks between the two per merchant at settle time
-///                        (REF-333); both must hold the role or settlements submitted from the
+///                       ; both must hold the role or settlements submitted from the
 ///                        unlisted address revert.
 ///   GUARDIAN           — immutable second key on ProtocolAddressRegistry that may cancel a
 ///                        queued address update alongside the owner. Must be a key with different
@@ -189,7 +189,7 @@ contract Deploy is Script {
         CommissionEscrow(_escrow).grantRole(ORACLE_ROLE, oracle);
 
         // Both settlement identities hold the role; the facilitator service picks between them
-        // per merchant at settle time (REF-333). They must be two DIFFERENT addresses: granting
+        // per merchant at settle time. They must be two DIFFERENT addresses: granting
         // one address the role twice is a silent no-op, the router then looks correctly
         // configured, and every merchant who chose the unlisted identity would be settled from
         // the x402scan-listed EOA and indexed there permanently.

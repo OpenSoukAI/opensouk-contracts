@@ -1,0 +1,12 @@
+# Foundry
+out/
+cache/
+broadcast/
+
+# Environment
+.env
+.env.*
+
+# Coverage
+lcov.info
+coverage/

@@ -4,7 +4,7 @@ pragma solidity ^0.8.24;
 import {Vm} from "forge-std/Vm.sol";
 import {ISplitRouter} from "../../src/interfaces/ISplitRouter.sol";
 
-/// @dev Off-chain ERC-3009 authorization signing for tests (REF-269).
+/// @dev Off-chain ERC-3009 authorization signing for tests.
 ///
 /// ERC-3009 defines two authorization structs with identical fields and different names, so they
 /// produce different EIP-712 digests and are NOT interchangeable. `SplitRouter.route()` calls
@@ -12,7 +12,7 @@ import {ISplitRouter} from "../../src/interfaces/ISplitRouter.sol";
 /// `ReceiveWithAuthorization` typehash — so `signReceive` is the only variant that can settle.
 ///
 /// `signTransfer` exists solely so tests can prove the wrong typehash is rejected. It is the
-/// signature every signer in the stack produced before REF-269, and no production path should
+/// signature every signer in the stack once produced, and no production path should
 /// ever call it.
 library ERC3009Signer {
     /// @dev What `SplitRouter.route()` needs. Circle FiatTokenV2_2 `receiveWithAuthorization`.
